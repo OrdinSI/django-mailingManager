@@ -51,12 +51,12 @@ class MailingEvent(models.Model):
 
 class Message(models.Model):
     """Message Model"""
-    mailing_list = models.ForeignKey(MailingEvent, on_delete=models.CASCADE, verbose_name="рассылка")
+    mailing_event = models.ForeignKey(MailingEvent, on_delete=models.CASCADE, verbose_name="рассылка")
     subject = models.CharField(max_length=255, verbose_name="тема письма")
     body = models.TextField(verbose_name="тело письма")
 
     def __str__(self):
-        return f"{self.mailing_list}, {self.subject}, {self.body}"
+        return f"{self.mailing_event}, {self.subject}, {self.body}"
 
     class Meta:
         verbose_name = "сообщение"
