@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load static %}
 
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Бесплатный bootstrap 5 шаблон - Обложка</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body class="d-flex h-100 text-center text-white bg-dark">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    {% include 'distribution/includes/inc_main_menu.html' %}
+
+    <main class="px-3">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</div>
+<script src={% static "js/bootstrap.bundle.min.js" %}></script>
 </body>
 </html>
