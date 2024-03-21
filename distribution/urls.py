@@ -6,5 +6,5 @@ from distribution.views import MailingEventListView
 app_name = DistributionConfig.name
 
 urlpatterns = [
-    path('', MailingEventListView.as_view(), name='mailingevent_list'),
+    path('', MailingEventListView.as_view(), name='mailing_event_list'),
 ]
