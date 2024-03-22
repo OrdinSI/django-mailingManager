@@ -22,33 +22,23 @@ class Client(models.Model):
         verbose_name_plural = "клиенты"
 
 
-class MailingSetting(models.Model):
-    """Mailing Setting model"""
-    frequency = models.CharField(max_length=20,
-                                 choices=[('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')],
-                                 verbose_name="периодичность")
-    status = models.CharField(max_length=20,
-                              choices=[('created', 'Created'), ('started', 'Started'), ('completed', 'Completed')],
-                              verbose_name="статус")
-
-    def __str__(self):
-        return f"{self.frequency}, {self.status}"
-
-    class Meta:
-        verbose_name = "настройка"
-        verbose_name_plural = "настройки"
-
-
 class MailingEvent(models.Model):
     """Mailing Event model"""
-    send_time = models.DateTimeField(verbose_name="время рассылки")
-    setting = models.ForeignKey(MailingSetting, on_delete=models.CASCADE, verbose_name="настройки")
+    start_time = models.DateTimeField(verbose_name="время начала рассылки")
+    end_time = models.DateTimeField(verbose_name="время окончания рассылки", **settings.NULLABLE)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="дата изменения")
+    frequency = models.CharField(max_length=20,
+                                 choices=[('once', 'Однократно'), ('daily', 'Ежедневно'), ('weekly', 'Еженедельно'), ('monthly', 'Ежемесячно')],
+                                 verbose_name="периодичность")
+    status = models.CharField(max_length=20,
+                              choices=[('created', 'Создано'), ('started', 'Начато'), ('completed', 'Завершено')],
+                              default='created',
+                              verbose_name="статус")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="пользователь")
 
     def __str__(self):
-        return f"{self.owner} {self.send_time}"
+        return f"{self.owner} {self.start_time}"
 
     class Meta:
         verbose_name = "рассылка"

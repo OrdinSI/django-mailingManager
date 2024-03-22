@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from distribution.models import Client, MailingEvent, MailingSetting, Message, Log
+from distribution.models import Client, MailingEvent, Message, Log
 
 
 @admin.register(Client)
@@ -10,12 +10,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(MailingEvent)
 class MailingEventAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'send_time', 'setting')
-
-
-@admin.register(MailingSetting)
-class MailingSettingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'frequency', 'status')
+    list_display = ('id', 'owner', 'start_time', 'end_time')
 
 
 @admin.register(Message)

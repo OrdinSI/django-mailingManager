@@ -1,4 +1,28 @@
 {% extends 'home/base.html' %}
 
+
 {% block content %}
+    <div class="container">
+        {% if request.user.is_authenticated %}
+            <nav class="nav nav-masthead justify-content-center float-md-right">
+                <a class="nav-link active" aria-current="page" href="{% url 'distribution:mailing_event_create' %}">
+                    Добавить рассылку</a>
+            </nav>
+
+        {% endif %}
+        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+            {% for object in object_list %}
+                <div class="col-md-3">
+                    <div class="card border-light mb-3">
+                        <div class="card-header bg-dark text-white" >{{ object.first_name }} {{ object.last_name }}</div>
+                        <div class="card-body bg-dark text-white">
+                            <h5 class="card-title bg-dark text-white">{{ object.email }}</h5>
+                            <p class="card-text bg-dark text-white">{{ object.comment | truncatechars:10 }}</p>
+                            <a href="{% url 'distribution:mailing_event_detail' object.pk %}" class="card-link">Детали</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
