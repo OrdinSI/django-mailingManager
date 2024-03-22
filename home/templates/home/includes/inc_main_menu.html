@@ -1,10 +1,34 @@
 <header class="mb-auto">
     <div>
-      <h3 class="float-md-left mb-0">Сервис управления рассылками</h3>
-      <nav class="nav nav-masthead justify-content-center float-md-right">
-        <a class="nav-link active" aria-current="page" href="#">Главная</a>
-        <a class="nav-link" href="#">Особенности</a>
-        <a class="nav-link" href="#">Контакты</a>
-      </nav>
+        <h3 class="float-md-left mb-0">Сервис управления рассылками</h3>
+        <nav class="nav nav-masthead justify-content-center float-md-right">
+            <a class="nav-link active" aria-current="page" href="{% url 'home:home' %}">Главная</a>
+            <a class="nav-link active" aria-current="page" href="#">Рассылки</a>
+            <a class="nav-link active" aria-current="page" href="#">Клиенты</a>
+            <a class="nav-link active" aria-current="page" href="#">Блог</a>
+
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-bs-toggle="dropdown"
+                       aria-expanded="false">Управление</a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdown02">
+                        <li><a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a></li>
+                        <li><a class="dropdown-item" href="{% url 'users:logout' %}">Выйти</a></li>
+                    </ul>
+                </li>
+
+            {% else %}
+
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown"
+                   aria-expanded="false">Войти</a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdown01">
+                    <li><a class="dropdown-item" href="{% url 'users:login' %}">Войти</a></li>
+                    <li><a class="dropdown-item" href="{% url 'users:register' %}">Зарегистрироваться</a></li>
+                </ul>
+            </li>
+
+            {% endif %}
+        </nav>
     </div>
-  </header>
+</header>

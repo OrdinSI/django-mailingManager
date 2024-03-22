@@ -10,7 +10,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(MailingEvent)
 class MailingEventAdmin(admin.ModelAdmin):
-    list_display = ('id', 'client', 'send_time', 'setting')
+    list_display = ('id', 'user', 'send_time', 'setting')
 
 
 @admin.register(MailingSetting)
@@ -25,4 +25,4 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(Log)
 class LogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'message', 'client', 'attempt_time', 'status', 'response')
+    list_display = ('id', 'message', 'user', 'attempt_time', 'status', 'response')
