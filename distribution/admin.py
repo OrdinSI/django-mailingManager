@@ -5,12 +5,12 @@ from distribution.models import Client, MailingEvent, MailingSetting, Message, L
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'email')
+    list_display = ('id', 'first_name', 'last_name', 'email', 'owner')
 
 
 @admin.register(MailingEvent)
 class MailingEventAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'send_time', 'setting')
+    list_display = ('id', 'owner', 'send_time', 'setting')
 
 
 @admin.register(MailingSetting)
@@ -25,4 +25,4 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(Log)
 class LogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'message', 'user', 'attempt_time', 'status', 'response')
+    list_display = ('id', 'message', 'owner', 'attempt_time', 'status', 'response')

@@ -3,8 +3,8 @@
         <h3 class="float-md-left mb-0">Сервис управления рассылками</h3>
         <nav class="nav nav-masthead justify-content-center float-md-right">
             <a class="nav-link active" aria-current="page" href="{% url 'home:home' %}">Главная</a>
-            <a class="nav-link active" aria-current="page" href="#">Рассылки</a>
-            <a class="nav-link active" aria-current="page" href="#">Клиенты</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'distribution:mailing_event_list' %}">Рассылки</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'distribution:client_list' %}">Клиенты</a>
             <a class="nav-link active" aria-current="page" href="#">Блог</a>
 
             {% if user.is_authenticated %}
