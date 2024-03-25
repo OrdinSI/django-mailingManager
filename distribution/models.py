@@ -29,12 +29,15 @@ class MailingEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="дата изменения")
     frequency = models.CharField(max_length=20,
-                                 choices=[('once', 'Однократно'), ('daily', 'Ежедневно'), ('weekly', 'Еженедельно'), ('monthly', 'Ежемесячно')],
+                                 choices=[('once', 'Однократно'), ('daily', 'Ежедневно'), ('weekly', 'Еженедельно'),
+                                          ('monthly', 'Ежемесячно')],
                                  verbose_name="периодичность")
     status = models.CharField(max_length=20,
                               choices=[('created', 'Создано'), ('started', 'Начато'), ('completed', 'Завершено')],
                               default='created',
                               verbose_name="статус")
+    is_active = models.BooleanField(default=True, verbose_name='Активация рассылки')
+    clients = models.ManyToManyField(Client, verbose_name="клиенты", related_name="mailing_events")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="пользователь")
 
     def __str__(self):
@@ -47,7 +50,7 @@ class MailingEvent(models.Model):
 
 class Message(models.Model):
     """Message Model"""
-    mailing_event = models.ForeignKey(MailingEvent, on_delete=models.CASCADE, verbose_name="рассылка")
+    mailing_event = models.OneToOneField(MailingEvent, on_delete=models.CASCADE, verbose_name="рассылка")
     subject = models.CharField(max_length=255, verbose_name="тема письма")
     body = models.TextField(verbose_name="тело письма")
 

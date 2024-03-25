@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'home/base.html' %}
 
-</body>
-</html>
+{% block content %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <div class="card border-light mb-3">
+                    <div class="card-header bg-dark text-white">Удалить рассылку</div>
+                    <div class="card-body bg-dark text-white">
+                        <label class="form-label bg-dark text-white">Хотите удалить рассылку? {{ object.message.subject }}</label>
+                        <div class="card-footer bg-dark text-white text-center">
+                            <button type="submit" class="btn btn-danger">
+                                Подтвердить
+                            </button>
+                            <a href="{% url 'distribution:mailing_event_list' %}" class="btn btn-warning">Отмена</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

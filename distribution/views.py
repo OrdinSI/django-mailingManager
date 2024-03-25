@@ -12,8 +12,9 @@ class MailingEventListView(LoginRequiredMixin, ListView):
     login_url = 'home:home'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(owner=self.request.user)
+        queryset = super().get_queryset().filter(owner=self.request.user)
+        queryset = queryset.select_related('message')
+        return queryset
 
 
 class MailingEventDetailView(LoginRequiredMixin, DetailView):
@@ -29,12 +30,17 @@ class MailingEventCreateView(LoginRequiredMixin, CreateView):
     login_url = 'home:home'
     success_url = reverse_lazy('distribution:mailing_event_list')
 
-    def form_valid(self, form):
-        client = form.save(commit=False)
-        client.owner = self.request.user
-        client.save()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = self.get_form()
+        field_order = ['subject', 'body', 'start_time', 'end_time', 'frequency', 'clients']
+        context['field_order'] = [form[field] for field in field_order if field in form.fields]
+        return context
 
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 
 class MailingEventUpdateView(LoginRequiredMixin, UpdateView):
@@ -43,6 +49,18 @@ class MailingEventUpdateView(LoginRequiredMixin, UpdateView):
     form_class = MailingEventForm
     login_url = 'home:home'
     success_url = reverse_lazy('distribution:mailing_event_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = self.get_form()
+        field_order = ['subject', 'body', 'start_time', 'end_time', 'frequency', 'clients']
+        context['field_order'] = [form[field] for field in field_order if field in form.fields]
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 
 class MailingEventDeleteView(LoginRequiredMixin, DeleteView):

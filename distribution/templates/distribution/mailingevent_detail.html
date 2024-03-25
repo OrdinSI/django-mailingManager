@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'home/base.html' %}
 
-</body>
-</html>
+
+{% block content %}
+    <div class="container">
+        {% if request.user.is_authenticated %}
+            <nav class="nav nav-masthead justify-content-center float-md-right">
+                <a class="nav-link active" aria-current="page" href="{% url 'distribution:mailing_event_create' %}">
+                    Добавить рассылку</a>
+            </nav>
+        {% endif %}
+        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card border-light mb-3">
+                    <div class="card-header bg-dark text-white">{{ object.message.subject }}</div>
+                    <div class="card-body bg-dark text-white">
+                        <p class="card-text bg-dark text-white">{{ object.message.body }}</p>
+                        <p class="card-text"><small class="text-white">Дата начала: {{ object.start_time }}</small></p>
+                        <p class="card-text"><small class="text-white">Дата окончания: {{ object.end_time }}</small></p>
+                        {% for client in object.clients.all %}
+                            <li><small class="text-white">{{ client.first_name }} {{ client.last_name }}
+                                - {{ client.email }}</small></li>
+                        {% empty %}
+                            <li><small class="text-white">Нет клиентов</small></li>
+                        {% endfor %}
+                        <a href="{% url 'distribution:mailing_event_update' object.pk %}" class="card-link">Обновить</a>
+                        <a href="{% url 'distribution:mailing_event_delete' object.pk %}" class="card-link">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
