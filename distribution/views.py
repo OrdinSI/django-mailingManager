@@ -1,7 +1,10 @@
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from config.utils.time_utils import convert_to_local_time
 from distribution.forms import ClientForm, MailingEventForm
 from distribution.models import MailingEvent, Client
 
@@ -21,6 +24,18 @@ class MailingEventDetailView(LoginRequiredMixin, DetailView):
     """ View for detail mailing event """
     model = MailingEvent
     login_url = 'home:home'
+
+    def get_context_data(self, **kwargs):
+        context = super(MailingEventDetailView, self).get_context_data(**kwargs)
+        event = context['object']
+        user_timezone = self.request.user.timezone
+
+        if event.start_time:
+            context['start_time'] = (convert_to_local_time(event.start_time, user_timezone)).strftime("%Y-%m-%d %H:%M")
+        if event.end_time:
+            context['end_time'] = (convert_to_local_time(event.end_time, user_timezone)).strftime("%Y-%m-%d %H:%M")
+
+        return context
 
 
 class MailingEventCreateView(LoginRequiredMixin, CreateView):
@@ -61,6 +76,16 @@ class MailingEventUpdateView(LoginRequiredMixin, UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+
+    def get_initial(self):
+        initial = super().get_initial()
+        obj = self.get_object()
+        user_timezone = self.request.user.timezone
+        if obj.start_time:
+            initial['start_time'] = convert_to_local_time(obj.start_time, user_timezone)
+        if obj.end_time:
+            initial['end_time'] = convert_to_local_time(obj.end_time, user_timezone)
+        return initial
 
 
 class MailingEventDeleteView(LoginRequiredMixin, DeleteView):

@@ -15,8 +15,8 @@
                     <div class="card-header bg-dark text-white">{{ object.message.subject }}</div>
                     <div class="card-body bg-dark text-white">
                         <p class="card-text bg-dark text-white">{{ object.message.body }}</p>
-                        <p class="card-text"><small class="text-white">Дата начала: {{ object.start_time }}</small></p>
-                        <p class="card-text"><small class="text-white">Дата окончания: {{ object.end_time }}</small></p>
+                        <p class="card-text"><small class="text-white">Дата начала: {{ start_time }}</small></p>
+                        <p class="card-text"><small class="text-white">Дата окончания: {{ end_time }}</small></p>
                         {% for client in object.clients.all %}
                             <li><small class="text-white">{{ client.first_name }} {{ client.last_name }}
                                 - {{ client.email }}</small></li>

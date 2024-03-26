@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, Pass
 
 from config.utils.mixins import StyleFormMixin
 from users.models import User
+import pytz
 
 
 class UserAuthenticationForm(StyleFormMixin, AuthenticationForm):
@@ -21,10 +22,11 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 
 class UserProfileForm(StyleFormMixin, UserChangeForm):
     """Форма для профиля пользователя"""
+    timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.all_timezones])
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone', 'country', 'avatar')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'timezone', 'avatar')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

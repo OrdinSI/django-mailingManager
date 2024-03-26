@@ -1,7 +1,9 @@
 from django import forms
 
 from config.utils.mixins import StyleFormMixin
+from config.utils.time_utils import convert_to_utc, convert_to_local_time
 from distribution.models import Client, MailingEvent, Message
+from distribution.tasks import schedule_email_task
 
 
 class ClientForm(StyleFormMixin, forms.ModelForm):
@@ -46,13 +48,28 @@ class MailingEventForm(StyleFormMixin, forms.ModelForm):
             self.fields['subject'].initial = self.instance.message.subject
             self.fields['body'].initial = self.instance.message.body
 
+        # if self.instance and self.instance.start_time:
+        #     user_timezone = self.request.user.timezone
+        #     local_start_time = convert_to_local_time(self.instance.start_time, user_timezone)
+        #     local_end_time = convert_to_local_time(self.instance.end_time, user_timezone)
+        #
+        #     self.fields['start_time'].initial = local_start_time
+        #     self.fields['end_time'].initial = local_end_time
+
+
     def save(self, commit=True):
         mailing_event = super().save(commit=False)
         mailing_event.owner = self.request.user
 
+        user_timezone = self.request.user.timezone
+
+        mailing_event.start_time = convert_to_utc(self.cleaned_data['start_time'], user_timezone)
+        mailing_event.end_time = convert_to_utc(self.cleaned_data['end_time'], user_timezone)
+
         if commit:
             mailing_event.save()
             self.save_m2m()
+            schedule_email_task(mailing_event)
 
         message, created = Message.objects.get_or_create(mailing_event=mailing_event)
         message.subject = self.cleaned_data['subject']
