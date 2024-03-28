@@ -139,4 +139,4 @@ def schedule_email_task(mailing_event):
     finalize_task = current_app.send_task('distribution.tasks.finalize_mailing_event', args=[mailing_event.id],
                                           eta=mailing_event.end_time)
 
-    return task
+    return task, finalize_task
