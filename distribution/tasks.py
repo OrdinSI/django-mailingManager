@@ -67,13 +67,13 @@ def send_email(mailing_event_id):
     print("Задача send_email завершена")
 
 
-# @shared_task
-# def finalize_mailing_event(mailing_event_id):
-#     """Задача на изменение статуса при окончании рассылки"""
-#     mailing_event = MailingEvent.objects.get(id=mailing_event_id)
-#     if mailing_event.end_time <= timezone.now():
-#         mailing_event.status = 'completed'
-#         mailing_event.save(update_fields=['status'])
+@shared_task
+def finalize_mailing_event(mailing_event_id):
+    """Задача на изменение статуса при окончании рассылки"""
+    mailing_event = MailingEvent.objects.get(id=mailing_event_id)
+    if mailing_event.end_time <= timezone.now():
+        mailing_event.status = 'completed'
+        mailing_event.save(update_fields=['status'])
 
 
 def schedule_email_task(mailing_event):
@@ -136,7 +136,7 @@ def schedule_email_task(mailing_event):
         task.expires = mailing_event.end_time
         task.save(update_fields=['crontab', 'args', 'one_off', 'expires'])
 
-    # finalize_task = current_app.send_task('distribution.tasks.finalize_mailing_event', args=[mailing_event.id],
-    #                                       eta=mailing_event.end_time)
+    finalize_task = current_app.send_task('distribution.tasks.finalize_mailing_event', args=[mailing_event.id],
+                                          eta=mailing_event.end_time)
 
     return task
