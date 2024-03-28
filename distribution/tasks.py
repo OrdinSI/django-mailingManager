@@ -25,8 +25,6 @@ def send_email(mailing_event_id):
         mailing_event.status = 'started'
         mailing_event.save(update_fields=['status'])
 
-        print("Статус события рассылки изменен на 'started'")
-
         clients = Client.objects.filter(owner=mailing_event.owner)
 
         print(f"Найдено {len(clients)} клиентов для рассылки")
