@@ -45,7 +45,6 @@ def send_email(mailing_event_id):
                     fail_silently=False,
                 )
 
-
                 Log.objects.create(
                     message=mailing_event.message,
                     owner=mailing_event.owner,
