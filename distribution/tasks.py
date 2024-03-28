@@ -45,7 +45,6 @@ def send_email(mailing_event_id):
                     fail_silently=False,
                 )
 
-                print(f"Письмо успешно отправлено клиенту: {client.email}")
 
                 Log.objects.create(
                     message=mailing_event.message,
