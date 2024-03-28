@@ -21,8 +21,6 @@ def send_email(mailing_event_id):
 
     mailing_event = MailingEvent.objects.get(id=mailing_event_id)
 
-    print(f"Полученное событие рассылки: {mailing_event}")
-
     if mailing_event.status == 'created':
         mailing_event.status = 'started'
         mailing_event.save(update_fields=['status'])
