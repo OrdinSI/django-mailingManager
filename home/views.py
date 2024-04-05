@@ -25,6 +25,3 @@ class HomeView(View):
             'random_posts': random_posts
         }
         return render(request, self.template_name, context)
-
-
-
