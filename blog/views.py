@@ -13,3 +13,4 @@ class BlogDetailView(DetailView):
         self.object.views += 1
         self.object.save()
         return self.object
+
