@@ -10,13 +10,20 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.generic import CreateView, View, UpdateView
+from django.views.generic import CreateView, View, UpdateView, ListView
 from jose import jwt, JWTError
 
 from config import settings
-from users.forms import UserAuthenticationForm, UserRegisterForm, UserProfileForm, UserPasswordResetForm, \
-    UserSetNewPasswordForm
+from users.forms import UserAuthenticationForm, UserRegisterForm, UserPasswordResetForm, \
+    UserSetNewPasswordForm, UserProfileForm, UpdateUserForm
 from users.models import User
+
+
+class UserListView(LoginRequiredMixin, ListView):
+    """ User list view """
+    model = User
+    login_url = 'home:home'
+    template_name = 'users/user_list.html'
 
 
 class UserLoginView(LoginView):
@@ -101,6 +108,14 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+class UpdateUserView(LoginRequiredMixin, UpdateView):
+    """ Представление для редактирования пользователя"""
+    model = User
+    form_class = UpdateUserForm
+    template_name = 'users/user_form.html'
+    success_url = reverse_lazy('home:home')
 
 
 class UserPasswordResetView(SuccessMessageMixin, PasswordResetView):

@@ -1,9 +1,8 @@
 from django import forms
-
-from config.utils.mixins import StyleFormMixin
-from config.utils.time_utils import convert_to_utc, convert_to_local_time
 from distribution.models import Client, MailingEvent, Message
 from distribution.tasks import schedule_email_task
+from utils.mixins import StyleFormMixin
+from utils.time_utils import convert_to_utc
 
 
 class ClientForm(StyleFormMixin, forms.ModelForm):
@@ -41,6 +40,7 @@ class MailingEventForm(StyleFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
+
         if self.request and self.request.user:
             self.fields['clients'].queryset = Client.objects.filter(owner=self.request.user)
 
@@ -55,7 +55,6 @@ class MailingEventForm(StyleFormMixin, forms.ModelForm):
         #
         #     self.fields['start_time'].initial = local_start_time
         #     self.fields['end_time'].initial = local_end_time
-
 
     def save(self, commit=True):
         mailing_event = super().save(commit=False)
@@ -85,3 +84,15 @@ class MessageForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Message
         fields = ['subject', 'body']
+
+
+class ManagerMailingEventForm(StyleFormMixin, forms.ModelForm):
+    """ Form for Manager"""
+
+    class Meta:
+        model = MailingEvent
+        fields = ['is_active']
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)

@@ -2,8 +2,8 @@
 
 
 {% block content %}
-    <div class="container">
-        {% if request.user.is_authenticated %}
+    <div class="container mt-3">
+        {% if request.user.is_authenticated and show_detail_button %}
             <nav class="nav nav-masthead justify-content-center float-md-right">
                 <a class="nav-link active" aria-current="page" href="{% url 'distribution:mailing_event_create' %}">
                     Добавить рассылку</a>
@@ -24,7 +24,9 @@
                             <li><small class="text-white">Нет клиентов</small></li>
                         {% endfor %}
                         <a href="{% url 'distribution:mailing_event_update' object.pk %}" class="card-link">Обновить</a>
-                        <a href="{% url 'distribution:mailing_event_delete' object.pk %}" class="card-link">Удалить</a>
+                        {% if show_detail_button %}
+                            <a href="{% url 'distribution:mailing_event_delete' object.pk %}" class="card-link">Удалить</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

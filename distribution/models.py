@@ -46,6 +46,9 @@ class MailingEvent(models.Model):
     class Meta:
         verbose_name = "рассылка"
         verbose_name_plural = "рассылки"
+        permissions = [
+            ('set_is_active_event', 'Установка активации рассылки'),
+        ]
 
 
 class Message(models.Model):

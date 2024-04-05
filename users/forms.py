@@ -1,10 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm, \
     UserChangeForm
-
-from config.utils.mixins import StyleFormMixin
 from users.models import User
 import pytz
+
+from utils.mixins import StyleFormMixin
 
 
 class UserAuthenticationForm(StyleFormMixin, AuthenticationForm):
@@ -26,11 +26,19 @@ class UserProfileForm(StyleFormMixin, UserChangeForm):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone', 'timezone', 'avatar')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'timezone')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['password'].widget = forms.HiddenInput()
+
+
+class UpdateUserForm(StyleFormMixin, forms.ModelForm):
+    """Форма профиля пользователя for manager"""
+
+    class Meta:
+        model = User
+        fields = ['is_active']
 
 
 class UserPasswordResetForm(StyleFormMixin, PasswordResetForm):

@@ -17,8 +17,6 @@ logger = logging.getLogger(__name__)
 def send_email(mailing_event_id):
     """ Задача на рассылку"""
 
-    logger.info("Начало задачи send_email")
-
     mailing_event = MailingEvent.objects.get(id=mailing_event_id)
 
     if mailing_event.status == 'created':
@@ -27,12 +25,8 @@ def send_email(mailing_event_id):
 
         clients = Client.objects.filter(owner=mailing_event.owner)
 
-        print(f"Найдено {len(clients)} клиентов для рассылки")
-
         try:
             for client in clients:
-                print(f"Отправка письма клиенту: {client.email}")
-
                 send_mail(
                     subject=mailing_event.message.subject,
                     message=mailing_event.message.body,
@@ -49,7 +43,6 @@ def send_email(mailing_event_id):
                 )
 
         except Exception as e:
-            print(f"Ошибка при отправке письма: {str(e)}")
 
             Log.objects.create(
                 message=mailing_event.message,
@@ -57,8 +50,6 @@ def send_email(mailing_event_id):
                 status='failed',
                 response=str(e)
             )
-
-    print("Задача send_email завершена")
 
 
 @shared_task
@@ -73,7 +64,6 @@ def finalize_mailing_event(mailing_event_id):
 def schedule_email_task(mailing_event):
     """Планирование задачи рассылки и завершения рассылки"""
     start_time = mailing_event.start_time
-    print(start_time)
     task_name = None
     one_off = None
     day_of_week = '*'
