@@ -8,5 +8,5 @@ from home.views import HomeView
 app_name = HomeConfig.name
 
 urlpatterns = [
-    path('', cache_page(60)(HomeView.as_view()), name='home'),
+    path('', HomeView.as_view(), name='home'),
 ]

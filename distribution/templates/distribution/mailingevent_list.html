@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container mt-3">
-        {% if request.user.is_authenticated  and show_detail_button %}
+        {% if request.user.is_authenticated  and show_create_button %}
             <nav class="nav nav-masthead justify-content-center float-md-right">
                 <a class="nav-link active" aria-current="page" href="{% url 'distribution:mailing_event_create' %}">
                     Добавить рассылку</a>

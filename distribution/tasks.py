@@ -58,7 +58,8 @@ def finalize_mailing_event(mailing_event_id):
     mailing_event = MailingEvent.objects.get(id=mailing_event_id)
     if mailing_event.end_time <= timezone.now():
         mailing_event.status = 'completed'
-        mailing_event.save(update_fields=['status'])
+        mailing_event.is_active = False
+        mailing_event.save(update_fields=['status', 'is_active'])
 
 
 def schedule_email_task(mailing_event):
@@ -69,6 +70,10 @@ def schedule_email_task(mailing_event):
     day_of_week = '*'
     day_of_month = None
     month_of_year = None
+    should_send_immediately = False
+
+    if start_time <= timezone.now() and mailing_event.is_active:
+        should_send_immediately = True
 
     if mailing_event.frequency == 'once':
         day_of_month = start_time.day
@@ -119,6 +124,9 @@ def schedule_email_task(mailing_event):
         task.one_off = one_off
         task.expires = mailing_event.end_time
         task.save(update_fields=['crontab', 'args', 'one_off', 'expires'])
+
+    if should_send_immediately:
+        send_email.delay(mailing_event.id)
 
     finalize_task = current_app.send_task('distribution.tasks.finalize_mailing_event', args=[mailing_event.id],
                                           eta=mailing_event.end_time)

@@ -68,13 +68,14 @@ class MailingEventForm(StyleFormMixin, forms.ModelForm):
         if commit:
             mailing_event.save()
             self.save_m2m()
-            schedule_email_task(mailing_event)
 
         message, created = Message.objects.get_or_create(mailing_event=mailing_event)
         message.subject = self.cleaned_data['subject']
         message.body = self.cleaned_data['body']
         if commit:
             message.save()
+            schedule_email_task(mailing_event)
+
         return mailing_event
 
 

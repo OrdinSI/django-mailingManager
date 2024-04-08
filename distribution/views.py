@@ -10,7 +10,7 @@ from utils.time_utils import convert_to_local_time
 class MailingEventListView(LoginRequiredMixin, ListView):
     """ View for listing all mailing events """
     model = MailingEvent
-    login_url = 'home:home'
+    login_url = 'users:login'
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related('message')
@@ -21,13 +21,13 @@ class MailingEventListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['show_create_button'] = not self.request.user.groups.filter(name='manager').exists()
         if self.request.user.is_superuser or self.request.user.has_perm('distribution.set_is_active_event'):
             context['user_type'] = 'admin_manager'
             mailing_events_by_owner = defaultdict(list)
             for mailing_event in context['object_list']:
                 mailing_events_by_owner[mailing_event.owner].append(mailing_event)
             context['mailing_events_by_owner'] = dict(mailing_events_by_owner)
-            context['show_create_button'] = not self.request.user.groups.filter(name='manager').exists()
             return context
         else:
             return context
@@ -124,7 +124,7 @@ class MailingEventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView
 class ClientListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     """ View for listing all clients """
     model = Client
-    login_url = 'home:home'
+    login_url = 'users:login'
 
     def get_queryset(self):
         queryset = super().get_queryset()

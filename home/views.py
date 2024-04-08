@@ -1,9 +1,8 @@
-from random import sample
-
 from django.shortcuts import render
 from django.views.generic import View
 from blog.models import Blog
 from distribution.models import MailingEvent, Client
+from home.services import get_post
 
 
 class HomeView(View):
@@ -15,8 +14,7 @@ class HomeView(View):
         total_clients = Client.objects.count()
         active_mailing_events = MailingEvent.objects.filter(is_active=True).count()
 
-        all_posts = Blog.objects.all()
-        random_posts = sample(list(all_posts), min(4, all_posts.count()))
+        random_posts = get_post(Blog, 'random_posts')
 
         context = {
             'total_mailing_events': total_mailing_events,
