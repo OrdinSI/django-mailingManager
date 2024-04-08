@@ -15,4 +15,4 @@ def convert_to_local_time(utc_time, user_timezone):
     """Конвертирует время из UTC в локальное пользователя"""
     user_tz = pytz.timezone(user_timezone)
     local_time = utc_time.astimezone(user_tz)
-    return  local_time.replace(tzinfo=None)
+    return local_time.replace(tzinfo=None)
