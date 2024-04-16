@@ -1,4 +1,5 @@
 import json
+import smtplib
 
 from celery import shared_task, current_app
 from django.core.mail import send_mail
@@ -25,8 +26,8 @@ def send_email(mailing_event_id):
 
         clients = Client.objects.filter(owner=mailing_event.owner)
 
-        try:
-            for client in clients:
+        for client in clients:
+            try:
                 send_mail(
                     subject=mailing_event.message.subject,
                     message=mailing_event.message.body,
@@ -39,17 +40,29 @@ def send_email(mailing_event_id):
                     message=mailing_event.message,
                     owner=mailing_event.owner,
                     status='success',
-                    response='Email sent successfully'
+                    response='Email sent successfully',
+                    client=client
+
+                )
+            except smtplib.SMTPException as e:
+
+                Log.objects.create(
+                    message=mailing_event.message,
+                    owner=mailing_event.owner,
+                    status='failed',
+                    response=str(e),
+                    client=client
                 )
 
-        except Exception as e:
+            except Exception as e:
 
-            Log.objects.create(
-                message=mailing_event.message,
-                owner=mailing_event.owner,
-                status='failed',
-                response=str(e)
-            )
+                Log.objects.create(
+                    message=mailing_event.message,
+                    owner=mailing_event.owner,
+                    status='failed',
+                    response=str(e),
+                    client=client
+                )
 
 
 @shared_task
@@ -58,8 +71,8 @@ def finalize_mailing_event(mailing_event_id):
     mailing_event = MailingEvent.objects.get(id=mailing_event_id)
     if mailing_event.end_time <= timezone.now():
         mailing_event.status = 'completed'
-        mailing_event.is_active = False
-        mailing_event.save(update_fields=['status', 'is_active'])
+        # mailing_event.is_active = False
+        mailing_event.save(update_fields=['status'])
 
 
 def schedule_email_task(mailing_event):

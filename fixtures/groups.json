@@ -5,10 +5,10 @@
   "fields": {
     "name": "manager",
     "permissions": [
-      71,
       32,
-      72,
-      40
+      33,
+      45,
+      46
     ]
   }
 },
@@ -18,10 +18,10 @@
   "fields": {
     "name": "content_manager",
     "permissions": [
-      67,
-      68,
-      69,
-      70
+      38,
+      39,
+      40,
+      41
     ]
   }
 }

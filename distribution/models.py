@@ -73,9 +73,10 @@ class Log(models.Model):
     status = models.CharField(max_length=20, choices=[('success', 'Success'), ('failed', 'Failed')],
                               verbose_name="статус")
     response = models.TextField(verbose_name="ответ", **settings.NULLABLE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name="клиент", related_name='logs')
 
     def __str__(self):
-        return f"{self.message} - {self.owner}, {self.attempt_time}, {self.status}, {self.response}"
+        return f"{self.message} - {self.owner}, {self.attempt_time}, {self.status}, {self.client}"
 
     class Meta:
         verbose_name = "лог"

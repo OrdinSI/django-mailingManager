@@ -1,9 +1,10 @@
 from collections import defaultdict
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Prefetch
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from distribution.forms import ClientForm, MailingEventForm, ManagerMailingEventForm
-from distribution.models import MailingEvent, Client
+from distribution.models import MailingEvent, Client, Log
 from utils.time_utils import convert_to_local_time
 
 
@@ -39,15 +40,25 @@ class MailingEventDetailView(LoginRequiredMixin, DetailView):
     login_url = 'home:home'
 
     def get_context_data(self, **kwargs):
-        context = super(MailingEventDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         event = context['object']
         user_timezone = self.request.user.timezone
         context['show_create_button'] = not self.request.user.groups.filter(name='manager').exists()
+
+        clients_with_logs = event.clients.prefetch_related(
+            Prefetch('logs', queryset=Log.objects.filter(message__mailing_event=event), to_attr='event_logs')
+        )
+
+        for client in clients_with_logs:
+            for log in client.event_logs:
+                log.attempt_time = convert_to_local_time(log.attempt_time, user_timezone)
 
         if event.start_time:
             context['start_time'] = (convert_to_local_time(event.start_time, user_timezone)).strftime("%Y-%m-%d %H:%M")
         if event.end_time:
             context['end_time'] = (convert_to_local_time(event.end_time, user_timezone)).strftime("%Y-%m-%d %H:%M")
+
+        context['clients_with_logs'] = clients_with_logs
 
         return context
 

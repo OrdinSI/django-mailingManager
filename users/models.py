@@ -22,4 +22,3 @@ class User(AbstractUser):
         permissions = [
             ('set_is_active_user', 'Установка активации пользователя'),
         ]
-
