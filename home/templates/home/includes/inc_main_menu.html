@@ -1,0 +1,38 @@
+<header class="mb-auto">
+    <div>
+        <h3 class="float-md-left mb-0">MessageMomentum </h3>
+        <nav class="nav nav-masthead justify-content-center float-md-right">
+            <a class="nav-link active" aria-current="page" href="{% url 'home:home' %}">Главная</a>
+            <a class="nav-link active" aria-current="page"
+               href="{% url 'distribution:mailing_event_list' %}">Рассылки</a>
+            {% if  perms.users.set_is_active_user or request.user.is_superuser %}
+                <a class="nav-link active" aria-current="page" href="{% url 'users:user_list' %}">Пользователи</a>
+            {% else %}
+                <a class="nav-link active" aria-current="page" href="{% url 'distribution:client_list' %}">Клиенты</a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-bs-toggle="dropdown"
+                       aria-expanded="false">Управление</a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdown02">
+                        <li><a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a></li>
+                        <li><a class="dropdown-item" href="{% url 'users:logout' %}">Выйти</a></li>
+                    </ul>
+                </li>
+
+            {% else %}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown"
+                       aria-expanded="false">Войти</a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdown01">
+                        <li><a class="dropdown-item" href="{% url 'users:login' %}">Войти</a></li>
+                        <li><a class="dropdown-item" href="{% url 'users:register' %}">Зарегистрироваться</a></li>
+                    </ul>
+                </li>
+
+            {% endif %}
+        </nav>
+    </div>
+</header>

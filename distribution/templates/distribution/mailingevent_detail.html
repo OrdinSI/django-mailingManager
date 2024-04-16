@@ -1,0 +1,52 @@
+{% extends 'home/base.html' %}
+
+
+{% block content %}
+    <div class="container mt-3">
+        {% if request.user.is_authenticated and show_create_button %}
+            <nav class="nav nav-masthead justify-content-center float-md-right">
+                <a class="nav-link active" aria-current="page" href="{% url 'distribution:mailing_event_create' %}">
+                    Добавить рассылку</a>
+            </nav>
+        {% endif %}
+        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card border-light mb-3">
+                    <div class="card-header bg-dark text-white">{{ object.message.subject }}</div>
+                    <div class="card-body bg-dark text-white">
+                        <p class="card-text bg-dark text-white">{{ object.message.body }}</p>
+                        <p class="card-text"><small class="text-white">Дата начала: {{ start_time }}</small></p>
+                        <p class="card-text"><small class="text-white">Дата окончания: {{ end_time }}</small></p>
+                        <a href="{% url 'distribution:mailing_event_update' object.pk %}" class="card-link">Обновить</a>
+                        {% if show_create_button %}
+                            <a href="{% url 'distribution:mailing_event_delete' object.pk %}"
+                               class="card-link">Удалить</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for client in clients_with_logs %}
+            <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+                <div class="col-md-4">
+                    <div class="card border-light mb-3">
+                        <div class="card-header bg-dark text-white">{{ client.first_name }} {{ client.last_name }}
+                            - {{ client.email }}</div>
+                        <div class="card-body bg-dark text-white">
+                            {% for log in client.event_logs %}
+                                {% if log.status == 'success' %}
+                                    <span class="badge bg-success">Успешно</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Ошибка</span>
+                                {% endif %}
+                                <small class="text-muted">({{ log.attempt_time|date:"d.m.Y H:i" }})</small>
+                            {% empty %}
+                                <p class="card-text"><small class="text-white">Нет отправок</small></p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

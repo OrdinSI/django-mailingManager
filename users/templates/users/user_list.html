@@ -1,0 +1,22 @@
+{% extends 'home/base.html' %}
+
+
+{% block content %}
+    {% if request.user.is_superuser or perms.users.set_is_active_user %}
+    <div class="container mt-3">
+        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+            {% for object in object_list %}
+                <div class="col-md-3">
+                    <div class="card border-light mb-3">
+                        <div class="card-body bg-dark text-white">
+                            <h5 class="card-title bg-dark text-white">{{ object.email }}</h5>
+                            <p class="card-text bg-dark text-white">{{ object.phone }}</p>
+                          <a href="{% url 'users:update_user' object.pk %}" class="card-link">Управление</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

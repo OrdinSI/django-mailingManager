@@ -1,0 +1,24 @@
+{% extends 'home/base.html' %}
+{% load blog_image_tags %}
+
+{% block content %}
+
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-light mb-3">
+                    {% if object.image %}
+                        <img src="{% blog_image_tags object.image %}" class="card-img-top" alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body bg-dark text-white">
+                        <h5 class="card-title text-white">{{ object.title }}</h5>
+                        <p class="card-text text-white">{{ object.content }}</p>
+                        <a href="{% url 'home:home' %}" class="card-link">Назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
